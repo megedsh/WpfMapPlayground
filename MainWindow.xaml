@@ -37,7 +37,7 @@
                     <RowDefinition Height="240" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <views:MasterTracksView DataContext="{Binding MasterTracksVm}" />
+                <views:ExampleGeometriesView DataContext="{Binding ExampleGeometriesVm}" />
 
                 <Expander Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Time Laps" IsExpanded="False" >
                     <StackPanel Orientation="Horizontal" >

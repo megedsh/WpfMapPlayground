@@ -2,7 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Media;
 
-namespace WpfMapPlayground.Views;
+using WpfMapPlayground.Views;
+
+namespace WpfMapPlayground.Models;
 
 public interface IItemForMap 
 {
@@ -11,6 +13,7 @@ public interface IItemForMap
     Color Color { get; set; }
     bool VisibleOnMap { get; set; }
     int Thickness { get; set; }
+    int PointCount { get; }
     object Item { get; set; }
 }
 public abstract class ItemForMap : ObservableObject, IItemForMap
@@ -21,6 +24,10 @@ public abstract class ItemForMap : ObservableObject, IItemForMap
     private object m_item;
     public Guid Id { get; set; } = Guid.NewGuid();
     public string Name { get; set; }
+    public virtual int PointCount
+    {
+        get => 0;
+    }
 
     public Color Color
     {

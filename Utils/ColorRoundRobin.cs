@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Collections.Generic;
 using System.Windows.Media;
 
-namespace WpfMapPlayground.Views
+namespace WpfMapPlayground.Utils
 {
     public class ColorRoundRobin
     {
         private readonly List<Color> m_colors;
         private          int         m_currentIndex;
 
-        public ColorRoundRobin()
-        {
-            m_colors = new List<Color>()
+        public ColorRoundRobin() =>
+            m_colors = new List<Color>
             {
                 Colors.Red,
                 Colors.Green,
@@ -26,7 +22,6 @@ namespace WpfMapPlayground.Views
                 Colors.Brown,
                 Colors.Gray
             };
-        }
 
         public Color GetNextColor()
         {

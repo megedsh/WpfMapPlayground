@@ -9,12 +9,13 @@
              xmlns:pt="http://propertytools.org/wpf"
              xmlns:wpf="clr-namespace:PropertyTools.Wpf"
              xmlns:converters="clr-namespace:WpfMapPlayground.Converters"
+             xmlns:models="clr-namespace:WpfMapPlayground.Models"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" >
     <UserControl.Resources>
         <ResourceDictionary>
             <pt:ColorToBrushConverter x:Key="ColorToBrushConverter" />
-            <converters:ColorToBrushWithOpacityConverter x:Key="ColorToBrushWithOpacityConverter" OpacityValue="0.6" />
+            <converters:ColorToBrushWithOpacityConverter x:Key="ColorToBrushWithOpacityConverter" OpacityValue="0.2" />
             <converters:BoolToAnyConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Collapsed" />
 
 
@@ -22,7 +23,7 @@
                 <Setter Property="Location" Value="{Binding TypedItem}"/>
             </Style>
 
-            <DataTemplate  DataType="{x:Type views:PointItemForMap}">
+            <DataTemplate  DataType="{x:Type models:PointItemForMap}">
                 <Path                         
                     Visibility="{Binding VisibleOnMap,Converter={StaticResource  BoolToVisibilityConverter}}"
                     Stroke="{Binding Color, Converter={StaticResource ColorToBrushConverter}}"
@@ -47,16 +48,16 @@
             </DataTemplate>
 
 
-            <DataTemplate DataType="{x:Type views:TimedLineForMap}" >
+            <DataTemplate DataType="{x:Type models:TimedLineForMap}" >
                 <map:MapPolyline Visibility="{Binding VisibleOnMap, Converter={StaticResource  BoolToVisibilityConverter}}" Locations="{Binding PolyLines}" Stroke="{Binding Color, Converter={StaticResource ColorToBrushConverter}}" StrokeThickness="{Binding Thickness}" />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type views:LineItemForMap}" >
+            <DataTemplate DataType="{x:Type models:LineItemForMap}" >
                 <map:MapPolyline Visibility="{Binding VisibleOnMap, Converter={StaticResource  BoolToVisibilityConverter}}" Locations="{Binding TypedItem}" Stroke="{Binding Color, Converter={StaticResource ColorToBrushConverter}}" StrokeThickness="{Binding Thickness}" />
             </DataTemplate>
 
 
-            <DataTemplate DataType="{x:Type views:SimplePolygonItemForMap}" >
+            <DataTemplate DataType="{x:Type models:SimplePolygonItemForMap}" >
                 <map:MapPolygon Visibility="{Binding VisibleOnMap,Converter={StaticResource  BoolToVisibilityConverter}}"
                                 Locations="{Binding TypedItem}"
                                 Stroke="{Binding Color, Converter={StaticResource ColorToBrushConverter}}"
@@ -64,7 +65,7 @@
                                 StrokeThickness="{Binding Thickness}" />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type views:MultiPolygonItemForMap}" >
+            <DataTemplate DataType="{x:Type models:MultiPolygonItemForMap}" >
                 <map:MapMultiPolygon 
                                 Visibility="{Binding VisibleOnMap,Converter={StaticResource  BoolToVisibilityConverter}}"                    
                                 Polygons="{Binding TypedItem}"
@@ -86,8 +87,8 @@
 
     <Grid>
         <map:Map x:Name="map"
-                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="7"
-                 Center="32.5,35.1"
+                 MinZoomLevel="2" MaxZoomLevel="21" ZoomLevel="5"
+                 Center="38,-101"
                  ManipulationMode="All"
                  MouseLeftButtonDown="MapMouseLeftButtonDown"
                  MouseRightButtonDown="MapMouseRightButtonDown"

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using MapControl;
+using WpfMapPlayground.ViewModels;
 
-namespace WpfMapPlayground.Views;
+namespace WpfMapPlayground.Models;
 
 public class TimedLineForMap : ItemForMap<TimedLineItem>
 {
@@ -21,21 +22,19 @@ public class TimedLineForMap : ItemForMap<TimedLineItem>
         if (Item is TimedLineItem trackItem)
         {
             LocationCollection a = new LocationCollection();
-            a.AddRange(trackItem.Positions.Select(toMapLocation));
+            a.AddRange(trackItem.Locations.Select(ti=>ti.Value));
             PolyLines = a;
         }
     }
-
-    private Location toMapLocation(TimedLlaPosition arg) => new(arg.Value.Latitude, arg.Value.Longitude);
-
+    
     public void UpdateByDate(DateTime date)
     {
         if (Item is TimedLineItem trackItem)
         {
-            List<TimedLlaPosition> filteredPositions = trackItem.Positions
+            List<TimedLocation> filteredPositions = trackItem.Locations
                                                                 .Where(p => p.Time <= date)
                                                                 .ToList();
-            PolyLines = new LocationCollection(filteredPositions.Select(toMapLocation));
+            PolyLines = new LocationCollection(filteredPositions.Select(ti=>ti.Value));
         }
     }
 }

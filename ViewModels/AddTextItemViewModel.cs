@@ -6,8 +6,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 using PropertyTools.DataAnnotations;
+using WpfMapPlayground.Views;
 
-namespace WpfMapPlayground.Views
+namespace WpfMapPlayground.ViewModels
 {
     
     internal class AddTextItemViewModel : ObservableObject, INotifyDataErrorInfo, IDataErrorInfo

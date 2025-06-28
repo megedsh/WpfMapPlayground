@@ -3,16 +3,33 @@
 using MapControl;
 
 using NetTopologySuite.Geometries;
+using NetTopologySuite.IO;
+
+using WpfMapPlayground.Models;
 
 using Geometry = NetTopologySuite.Geometries.Geometry;
 
-namespace WpfMapPlayground.Views
+namespace WpfMapPlayground.Utils
 {
     public class NetTopologyHelper
     {
-        public static List<ItemForMap> GetItems(Geometry geometry)
+        public static  WKTReader WktReader = new WKTReader();
+        public static List<IItemForMap> GetItemsFromWkt(string wkt)
         {
-            List<ItemForMap> itemsForMap = new List<ItemForMap>();
+            
+            Geometry geometry = WktReader.Read(wkt);
+            return GetItems(geometry);
+        }
+
+        public static MapControl.Location GetLocationFromWktPoint(string wktPointString) 
+        {
+            Point geometry = WktReader.Read(wktPointString) as Point;
+            return geometry.ToLocation();
+        }
+
+        public static List<IItemForMap> GetItems(Geometry geometry)
+        {
+            List<IItemForMap> itemsForMap = new List<IItemForMap>();
             switch (geometry)
             {
                 case GeometryCollection gc:
@@ -46,14 +63,14 @@ namespace WpfMapPlayground.Views
 
                     break;
                 }
-                    case Point point:
+                case Point point:
+                {
+                    itemsForMap.Add(new PointItemForMap
                     {
-                        itemsForMap.Add(new PointItemForMap
-                        {
-                            Item = point.ToLocation(),
-                        });
-                        break;
-                    }
+                        Item = point.ToLocation(),
+                    });
+                    break;
+                }
             }
 
             return itemsForMap;

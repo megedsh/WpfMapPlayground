@@ -1,12 +1,11 @@
 ﻿using System;
-
 using WpfMapPlayground.Views;
 
-namespace WpfMapPlayground;
+namespace WpfMapPlayground.ViewModels;
 
 public class DateSliderViewModel : ObservableObject
 {
-    private DateTime _selectedDate;
+    private DateTime m_selectedDate;
     private double   m_maxTicks;
     private double   m_minTicks;
     private double   m_maxTicks1;
@@ -14,8 +13,8 @@ public class DateSliderViewModel : ObservableObject
 
     public event Action<DateTime> SelectedDateChanged;
 
-    public DateTime MinDate { get; } = new DateTime(2020, 1, 1);
-    public DateTime MaxDate { get; } = new DateTime(2030, 1, 1);
+    public DateTime MinDate { get; }
+    public DateTime MaxDate { get; }
 
     public double MinTicks
     {
@@ -36,15 +35,15 @@ public class DateSliderViewModel : ObservableObject
         {
             SelectedDate = new DateTime((long)value);
             SelectedTimeString = SelectedDate.ToString("HH:mm:ss");
-            OnPropertyChanged(nameof(SelectedTicks));
+            OnPropertyChanged();
             SelectedDateChanged?.Invoke(SelectedDate);
         }
     }
 
     public DateTime SelectedDate
     {
-        get => _selectedDate;
-        set => SetProperty(ref _selectedDate, value);
+        get => m_selectedDate;
+        set => SetProperty(ref m_selectedDate, value);
     }
 
     public string SelectedTimeString
@@ -53,7 +52,7 @@ public class DateSliderViewModel : ObservableObject
         set => SetProperty(ref m_selectedTimeString, value);
     }
 
-    public void Update() 
+    public void Update()
     {
         OnPropertyChanged(nameof(MinDate));
         OnPropertyChanged(nameof(MaxDate));
@@ -67,6 +66,6 @@ public class DateSliderViewModel : ObservableObject
         MaxDate = end;
         MinTicks = start.Ticks;
         MaxTicks = end.Ticks;
-        SelectedDate = start;        
+        SelectedDate = start;
     }
 }

@@ -1,23 +1,24 @@
 ﻿using System;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using WpfMapPlayground.Models;
+using WpfMapPlayground.Views;
 
-namespace WpfMapPlayground.Views
+namespace WpfMapPlayground.ViewModels
 {
-    public class MasterTracksViewModel : ObservableObject
+    public class ExampleGeometriesViewModel : ObservableObject
     {
-        private TimedLineItem m_selectedTimedLine;
+        private IItemForMap m_selectedTimedLine;
 
         public object SelectedItems { get; set; }
 
         public event Action<object> OnAddIem;
 
-        public MasterTracksViewModel()
+        public ExampleGeometriesViewModel()
         {
             AddToMapCommand = new RelayCommand<object>(o => { OnAddIem?.Invoke(o); });
         }
 
-        public TimedLineItem SelectedTimedLine
+        public IItemForMap SelectedItem
         {
             get => m_selectedTimedLine;
             set => SetProperty(ref m_selectedTimedLine, value);

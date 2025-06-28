@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
+using WpfMapPlayground.Views;
 
-namespace WpfMapPlayground.Views;
+namespace WpfMapPlayground.Models;
 
 public class CompositeMapItem : ObservableObject, IItemForMap
 {
     private Color m_color;
     private bool  m_visibleOnMap;
     private int   m_thickness;
-    public List<ItemForMap> ItemForMaps { get; }
+    public List<IItemForMap> ItemsForMap { get; }
 
-    public CompositeMapItem(string name,
-        List<ItemForMap> itemForMaps, Color color)
+    public CompositeMapItem(string name,List<IItemForMap> itemsForMap)
     {
-        ItemForMaps = itemForMaps;
-        Name = name;
-        Color = color;
+        ItemsForMap = itemsForMap;
+        Name = name;        
         Thickness = 3;
         VisibleOnMap = true;
     }
@@ -30,7 +30,7 @@ public class CompositeMapItem : ObservableObject, IItemForMap
         get => m_color;
         set
         {
-            foreach (ItemForMap item in ItemForMaps)
+            foreach (IItemForMap item in ItemsForMap)
             {
                 item.Color = value;
             }
@@ -44,7 +44,7 @@ public class CompositeMapItem : ObservableObject, IItemForMap
         get => m_visibleOnMap;
         set
         {
-            foreach (ItemForMap item in ItemForMaps)
+            foreach (IItemForMap item in ItemsForMap)
             {
                 item.VisibleOnMap = value;
             }
@@ -58,7 +58,7 @@ public class CompositeMapItem : ObservableObject, IItemForMap
         get => m_thickness;
         set
         {
-            foreach (ItemForMap item in ItemForMaps)
+            foreach (IItemForMap item in ItemsForMap)
             {
                 item.Thickness = value;
             }
@@ -66,6 +66,8 @@ public class CompositeMapItem : ObservableObject, IItemForMap
             SetProperty(ref m_thickness, value);
         }
     }
+
+    public int PointCount => ItemsForMap.Select(i => i.PointCount).Sum();
 
     public object Item { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-
+using WpfMapPlayground.ViewModels;
 using WpfMapPlayground.Views;
 
 namespace WpfMapPlayground
@@ -20,12 +20,13 @@ namespace WpfMapPlayground
     {
         private bool                m_useTimeLaps;
         private DateSliderViewModel m_dateSliderVm;
+        private DateSliderViewModel m_dateSliderVm1;
 
         public MainViewModel()
         {
             ItemsForMapVm = new ItemsForMapViewModel();
-            MasterTracksVm = new MasterTracksViewModel();
-            MasterTracksVm.OnAddIem += ItemsForMapVm.Add;
+            ExampleGeometriesVm = new ExampleGeometriesViewModel();
+            ExampleGeometriesVm.OnAddIem += ItemsForMapVm.Add;
         }
 
         public bool UseTimeLaps
@@ -33,38 +34,33 @@ namespace WpfMapPlayground
             get => m_useTimeLaps;
             set
             {
-                if (value)                
+                if (value)
                 {
                     ItemsForMapVm.GetTimeRange(out DateTime start, out DateTime end);
                     if (end != DateTime.MaxValue)
                     {
-                        DateSliderVm = new DateSliderViewModel(start,end);
+                        DateSliderVm = new DateSliderViewModel(start, end);
                         DateSliderVm.Update();
                         DateSliderVm.SelectedDateChanged += ItemsForMapVm.UpdateSelectedDate;
                     }
                 }
-                
+                else
+                {
+                    ItemsForMapVm.RemoveDateConstraint();
+                }
+
                 SetProperty(ref m_useTimeLaps, value);
             }
         }
 
         public ItemsForMapViewModel ItemsForMapVm { get; set; }
 
-        public MasterTracksViewModel MasterTracksVm { get; set; }
+        public ExampleGeometriesViewModel ExampleGeometriesVm { get; set; }
 
         public DateSliderViewModel DateSliderVm
         {
-            get => m_dateSliderVm;
-            set
-            {
-                if (Equals(value, m_dateSliderVm))
-                {
-                    return;
-                }
-
-                m_dateSliderVm = value;
-                OnPropertyChanged();
-            }
+            get => m_dateSliderVm1;
+            set => SetProperty(ref m_dateSliderVm1, value);
         }
     }
 }

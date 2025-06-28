@@ -15,9 +15,9 @@ namespace WpfMapPlayground.Views
     /// <summary>
     /// Interaction logic for MasterTracksView.xaml
     /// </summary>
-    public partial class MasterTracksView : UserControl
+    public partial class ExampleGeometriesView : UserControl
     {
-        public MasterTracksView()
+        public ExampleGeometriesView()
         {
             InitializeComponent();
         }

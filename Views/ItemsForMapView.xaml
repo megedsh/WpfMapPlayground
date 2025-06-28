@@ -7,38 +7,95 @@
              xmlns:pt="http://propertytools.org/wpf"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800" >
+    <UserControl.Resources>
+        <Style x:Key="VisibleToggle" TargetType="ToggleButton" >
+            <Setter Property="Background" Value="Gray" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Content" Value="&#xE7B3;" />
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template" >
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton" >
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" >
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True" >
+                    <Setter Property="Background" Value="DodgerBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="10" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <GroupBox Header="Map Items">
-        <ListBox ItemsSource="{Binding Items}"                 
-                 SelectedItem="{Binding SelectedItem}"
-                 SelectionMode="Single"
-                 ScrollViewer.VerticalScrollBarVisibility="Visible" >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" >
-                        <CheckBox Content="Shown" IsChecked="{Binding VisibleOnMap}" Margin="4" VerticalAlignment="Center" />
-                        <Label Content="{Binding Name}" Margin="4" />
-                        <pt:ColorPicker Height="20" SelectedColor="{Binding Color}" Width="40" />
-                        <Slider Width="100" Height="20" 
-                                       Value="{Binding Thickness, Mode=TwoWay}" Minimum="1" Maximum="10" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <GroupBox Header="Map Items" >
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+
+                    <RowDefinition Height="Auto" />
+                    <!-- Header row -->
+
+                    <RowDefinition Height="*" />
+                    <!-- ListBox row -->
+
+                </Grid.RowDefinitions>
+
+
+                <!-- ListBox -->
+
+                <ListBox ItemsSource="{Binding Items}"
+                         SelectedItem="{Binding SelectedItem}"
+                         SelectionMode="Single"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible"
+                         Grid.Row="1" >
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" >
+                                <ToggleButton IsChecked="{Binding VisibleOnMap}" Width="27" Height="24" FontSize="15" VerticalAlignment="Center"
+                                              Style="{StaticResource VisibleToggle}" />
+                                <Label Content="{Binding Name}" Width="80" Margin="4" />
+                                <pt:ColorPicker Height="20" SelectedColor="{Binding Color}" Width="37" />
+                                <Slider Width="80" Height="20"
+                                        Value="{Binding Thickness, Mode=TwoWay}" Minimum="1" Maximum="10" />
+                                <Button Width="25" Height="25" ToolTip="Delete"
+                                        Background="White" BorderBrush="White"
+                                        Foreground="Red"
+                                        Command="{Binding DataContext.RemoveCommand, RelativeSource={RelativeSource AncestorType=local:ItemsForMapView}}"
+                                        CommandParameter="{Binding }" >
+                                    <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="15" Text="&#xE74D;"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Button>
+
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+
+                </ListBox>
+            </Grid>
+
         </GroupBox>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,5,0,5" >
             <Button Content="Add From String" Command="{Binding  AddFromStringCommand}"
                     Margin="0,0,10,0" />
-            
-            <Button Content="Remove" Command="{Binding RemoveCommand}"
-                    CommandParameter="{Binding SelectedItem}" />
-
         </StackPanel>
     </Grid>
 </UserControl>

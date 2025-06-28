@@ -5,16 +5,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
-
-using MapControl;
-
 using NetTopologySuite.IO;
 
 using WpfMapPlayground.Dialogs;
+using WpfMapPlayground.Models;
+using WpfMapPlayground.Utils;
+using WpfMapPlayground.Views;
 
 using Geometry = NetTopologySuite.Geometries.Geometry;
 
-namespace WpfMapPlayground.Views
+namespace WpfMapPlayground.ViewModels
 {
     public class ItemsForMapViewModel : ObservableObject
     {
@@ -76,8 +76,8 @@ namespace WpfMapPlayground.Views
         {
             AddTextItemViewModel vm = new AddTextItemViewModel
             {
-                //Name = "Wkt1",
-                Text = "GEOMETRYCOLLECTION(POINT(34.9733695343668 31.350654293881988),POINT(35.05679837390489 31.904742591635866),POINT(34.66746378939381 31.41712905957327),POINT(34.15576690689353 31.421875456441796),POINT(35.10129375499187 30.778947748038846),POINT(34.200262287980514 32.22525517006349))"
+                Name = "Wkt1",
+                Text = "GEOMETRYCOLLECTION(POINT(-103.44726562500001 35.49645605658418),POINT(-106.787109375 36.102376448736436),POINT(-108.720703125 39.027718840211605),POINT(-102.48046875000001 43.06888777416961),POINT(-87.05566406250001 39.909736234537206),POINT(-81.47460937500001 35.24561909420683),POINT(-87.36328125 33.32134852669881),POINT(-95.66894531250001 31.391157522824727),POINT(-95.75683593750003 36.38591277287654),POINT(-94.1748046875 42.488301979602255))"
             };
             PropertyDialog dialog = new PropertyDialog
             {
@@ -88,11 +88,16 @@ namespace WpfMapPlayground.Views
 
             if (dialog.ShowDialog().Value)
             {
-                WKTReader reader = new WKTReader();
-                Geometry geometry = reader.Read(vm.Text);
+                try
+                {
+                    List<IItemForMap> itemForMaps = NetTopologyHelper.GetItemsFromWkt(vm.Text);
 
-                List<ItemForMap> itemForMaps = NetTopologyHelper.GetItems(geometry);
-                Add(new CompositeMapItem(vm.Name, itemForMaps, m_colors.GetNextColor()));
+                    Add(new CompositeMapItem(vm.Name, itemForMaps));
+                }
+                catch(Exception e)
+                {
+                    System.Windows.MessageBox.Show($"Error parsing WKT: {e.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                }   
             }
         }
 
@@ -102,9 +107,10 @@ namespace WpfMapPlayground.Views
             {
                 return;
             }
-            if(item is CompositeMapItem compositeItem)
+
+            if (item is CompositeMapItem compositeItem)
             {
-                foreach (ItemForMap subItem in compositeItem.ItemForMaps)
+                foreach (ItemForMap subItem in compositeItem.ItemsForMap)
                 {
                     remove(subItem);
                 }
@@ -112,18 +118,18 @@ namespace WpfMapPlayground.Views
 
             Items.Remove(item);
 
-            foreach (var coll in new IList[] {
-                TimedLineItems,
-                LineItems,
-                SimplePolygonItems,
-                MultiPolygonItems,
-                PointItems
-            }
-
-)
+            foreach (IList coll in new IList[]
+                     {
+                         TimedLineItems,
+                         LineItems,
+                         SimplePolygonItems,
+                         MultiPolygonItems,
+                         PointItems
+                     }
+                    )
             {
                 coll.Remove(item);
-            }            
+            }
         }
 
         public IItemForMap SelectedItem
@@ -136,28 +142,44 @@ namespace WpfMapPlayground.Views
         {
             if (item == null)
             {
-                throw new ArgumentNullException(nameof(item), "Item cannot be null");
+                return;
             }
 
-            if (Items.Select(i => i.Item).Contains(item))
+            if (Items.Contains(item))
             {
                 return; // Item already exists in the collection
             }
 
             switch (item)
             {
-                case TimedLineItem tli:
-                    addTimedLineItem(item, tli);
+                case TimedLineForMap tli:
+                    addTimedLineItem(tli);
                     break;
                 case CompositeMapItem cmi:
                     addCompositItem(cmi);
+                    break;
+                case PointItemForMap pi:
+                    pi.Color = m_colors.GetNextColor();
+                    PointItems.Add(pi);
+                    Items.Add(pi);
+                    break;
+                case LineItemForMap li:
+                    li.Color = m_colors.GetNextColor();
+                    LineItems.Add(li);
+                    Items.Add(li);
+                    break;
+                case SimplePolygonItemForMap polygonItem:
+                    polygonItem.Color = m_colors.GetNextColor();
+                    SimplePolygonItems.Add(polygonItem);
+                    Items.Add(polygonItem);
                     break;
             }
         }
 
         private void addCompositItem(CompositeMapItem cmi)
         {
-            foreach (ItemForMap item in cmi.ItemForMaps)
+            cmi.Color = m_colors.GetNextColor();
+            foreach (ItemForMap item in cmi.ItemsForMap)
             {
                 switch (item)
                 {
@@ -179,37 +201,26 @@ namespace WpfMapPlayground.Views
             Items.Add(cmi);
         }
 
-        private void addTimedLineItem(object item, TimedLineItem tli)
+        private void addTimedLineItem(TimedLineForMap tli)
         {
-            string itemName = string.Empty;
-            ItemForMap newItem = null;
-
-            itemName = tli.Name;
-
-            TimedLineForMap t = new TimedLineForMap
-            {
-                Name = itemName,
-                Item = item,
-                Color = m_colors.GetNextColor(),
-            };
-            t.UpdateAll();
-            newItem = t;
-            TimedLineItems.Add(t);
-            Items.Add(newItem);
+            tli.Color = m_colors.GetNextColor();
+            tli.UpdateAll();
+            TimedLineItems.Add(tli);
+            Items.Add(tli);
         }
 
         public void GetTimeRange(out DateTime start, out DateTime end)
         {
             start = DateTime.MaxValue;
             end = DateTime.MaxValue;
-            foreach (ItemForMap item in Items)
+            foreach (IItemForMap item in Items)
             {
                 if (item is TimedLineForMap ti)
                 {
-                    if (ti.Item is TimedLineItem trackItem && trackItem.Positions.Any())
+                    if (ti.Item is TimedLineItem trackItem && trackItem.Locations.Any())
                     {
-                        start = trackItem.Positions.Min(p => p.Time);
-                        end = trackItem.Positions.Max(p => p.Time);
+                        start = trackItem.Locations.Min(p => p.Time);
+                        end = trackItem.Locations.Max(p => p.Time);
                         return;
                     }
                 }
@@ -218,7 +229,7 @@ namespace WpfMapPlayground.Views
 
         public void UpdateSelectedDate(DateTime date)
         {
-            foreach (ItemForMap item in Items)
+            foreach (IItemForMap item in Items)
             {
                 if (item is TimedLineForMap trackItemForMap)
                 {
@@ -226,25 +237,16 @@ namespace WpfMapPlayground.Views
                 }
             }
         }
-    }
 
-    public class ItemForMap<T> : ItemForMap
-    {
-        public T TypedItem => (T)Item;
-    }
-
-    public class LineItemForMap : ItemForMap<LocationCollection>
-    {
-    }
-
-    public class SimplePolygonItemForMap : ItemForMap<LocationCollection>
-    {
-    }
-
-    public class MultiPolygonItemForMap : ItemForMap<LocationCollection[]>
-    {
-    }
-    public class PointItemForMap : ItemForMap<Location>
-    {
+        public void RemoveDateConstraint()
+        {
+            foreach (IItemForMap item in Items)
+            {
+                if (item is TimedLineForMap trackItemForMap)
+                {
+                    trackItemForMap.UpdateAll();
+                }
+            }
+        }
     }
 }

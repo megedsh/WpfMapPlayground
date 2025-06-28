@@ -8,6 +8,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="_ReSharper.Caches\**" />
+	  <EmbeddedResource Remove="_ReSharper.Caches\**" />
+	  <None Remove="_ReSharper.Caches\**" />
+	  <Page Remove="_ReSharper.Caches\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="geometry_collection.wkt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="geometry_collection.wkt">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DataGridExtensions" Version="2.6.0" />
 		<PackageReference Include="NetTopologySuite" Version="2.6.0" />
 		<PackageReference Include="PropertyTools.Wpf" Version="3.1.0" />
