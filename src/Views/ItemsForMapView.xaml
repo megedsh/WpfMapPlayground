@@ -47,13 +47,7 @@
             <Grid>
 
                 <Grid.RowDefinitions>
-
-                    <RowDefinition Height="Auto" />
-                    <!-- Header row -->
-
                     <RowDefinition Height="*" />
-                    <!-- ListBox row -->
-
                 </Grid.RowDefinitions>
 
 
@@ -63,7 +57,7 @@
                          SelectedItem="{Binding SelectedItem}"
                          SelectionMode="Single"
                          ScrollViewer.VerticalScrollBarVisibility="Visible"
-                         Grid.Row="1" >
+                         Grid.Row="0" >
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
