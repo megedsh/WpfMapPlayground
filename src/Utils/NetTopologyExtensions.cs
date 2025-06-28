@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using MapControl;
 
 using NetTopologySuite.Geometries;
@@ -19,6 +19,22 @@ namespace WpfMapPlayground
 
             LocationCollection res = new LocationCollection();
             foreach (Coordinate coordinate in source.Coordinates)
+            {
+                res.Add(coordinate.ToLocation());
+            }
+
+            return res;
+        }
+
+        public static LocationCollection ToLocationCollection(this IEnumerable<Coordinate> source)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source), "LineString cannot be null");
+            }
+
+            LocationCollection res = new LocationCollection();
+            foreach (Coordinate coordinate in source)
             {
                 res.Add(coordinate.ToLocation());
             }

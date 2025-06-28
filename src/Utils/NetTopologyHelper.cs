@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using System.Linq;
 using MapControl;
 
 using NetTopologySuite.Geometries;
@@ -57,7 +57,7 @@ namespace WpfMapPlayground.Utils
                     {
                         itemsForMap.Add(new SimplePolygonItemForMap
                         {
-                            Item = polygon.Shell.ToLocationCollection(),
+                            Item = polygon.Shell.Coordinates.Take(polygon.Shell.Count - 1).ToLocationCollection(),
                         });
                     }
 
@@ -80,10 +80,10 @@ namespace WpfMapPlayground.Utils
         {
             List<LocationCollection> l = new List<LocationCollection>();
 
-            l.Add(polygon.Shell.ToLocationCollection());
+            l.Add(polygon.Shell.Coordinates.Take(polygon.Shell.Count - 1).ToLocationCollection());
             foreach (LineString item in polygon.InteriorRings)
             {
-                l.Add(item.ToLocationCollection());
+                l.Add(item.Coordinates.Take(item.Coordinates.Length - 1).ToLocationCollection());
             }
 
             return new MultiPolygonItemForMap

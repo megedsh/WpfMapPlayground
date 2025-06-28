@@ -2,7 +2,7 @@
 using NetTopologySuite.Index.HPRtree;
 using System;
 using System.Collections.ObjectModel;
-
+using System.Linq;
 using WpfMapPlayground.Views;
 
 namespace WpfMapPlayground.Models
@@ -32,16 +32,20 @@ namespace WpfMapPlayground.Models
 
     public class LineItemForMap : ItemForMap<LocationCollection>
     {
+        public override int PointCount => TypedItem.Count;
     }
 
     public class SimplePolygonItemForMap : ItemForMap<LocationCollection>
     {
+        public override int PointCount => TypedItem.Count;
     }
 
     public class MultiPolygonItemForMap : ItemForMap<LocationCollection[]>
     {
+        public override int PointCount => TypedItem.SelectMany(i=>i).Count();
     }
     public class PointItemForMap : ItemForMap<Location>
     {
+        public override int PointCount => 1;        
     }
 }

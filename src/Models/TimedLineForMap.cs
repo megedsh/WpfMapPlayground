@@ -11,6 +11,7 @@ public class TimedLineForMap : ItemForMap<TimedLineItem>
 {
     private LocationCollection m_polyLine;
 
+    public override int PointCount => TypedItem.Locations.Count;
     public LocationCollection PolyLines
     {
         get => m_polyLine;
