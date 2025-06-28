@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="WpfMapPlayground.Views.ItemsForMapView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WpfMapPlayground.Views"
+             xmlns:pt="http://propertytools.org/wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <GroupBox Header="Map Items">
+        <ListBox ItemsSource="{Binding Items}"                 
+                 SelectedItem="{Binding SelectedItem}"
+                 SelectionMode="Single"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" >
+                        <CheckBox Content="Shown" IsChecked="{Binding VisibleOnMap}" Margin="4" VerticalAlignment="Center" />
+                        <Label Content="{Binding Name}" Margin="4" />
+                        <pt:ColorPicker Height="20" SelectedColor="{Binding Color}" Width="40" />
+                        <Slider Width="100" Height="20" 
+                                       Value="{Binding Thickness, Mode=TwoWay}" Minimum="1" Maximum="10" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        </GroupBox>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Margin="5,5,0,5" >
+            <Button Content="Add From String" Command="{Binding  AddFromStringCommand}"
+                    Margin="0,0,10,0" />
+            
+            <Button Content="Remove" Command="{Binding RemoveCommand}"
+                    CommandParameter="{Binding SelectedItem}" />
+
+        </StackPanel>
+    </Grid>
+</UserControl>
