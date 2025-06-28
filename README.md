@@ -22,7 +22,7 @@ This app utilizes some amazing third party open source dependencies:
 * Clemens Fischer amazing XAML-Map-Control - the best tile map control for WPF.
   Go Give him a star : https://github.com/ClemensFischer/XAML-Map-Control
 
-* The insperation for this tool comes from a project I use a whole lot at my work.
+* The inspiration for this tool comes from a project I use a whole lot at my work.
  Clyde D'Cruz Amazing project = wkt-playground
  https://github.com/clydedacruz/openstreetmap-wkt-playground
 
