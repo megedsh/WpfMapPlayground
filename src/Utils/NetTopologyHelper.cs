@@ -13,7 +13,7 @@ namespace WpfMapPlayground.Utils
 {
     public class NetTopologyHelper
     {
-        public static  WKTReader WktReader = new WKTReader();
+        public static  WKTReader WktReader = new WKTReader(){ IsStrict = false };
         public static List<IItemForMap> GetItemsFromWkt(string wkt)
         {
             
